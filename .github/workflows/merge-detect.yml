@@ -1,0 +1,22 @@
+name: Merge Conflict Detector
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  detect-conflicts:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: Check for merge conflicts
+      run: |
+        git fetch origin main
+        if git merge-base --is-ancestor origin/main HEAD; then
+          echo "No conflicts"
+        else
+          echo "Merge conflicts detected"
+          exit 1
+        fi
