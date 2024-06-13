@@ -5,9 +5,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  GITHUB_API_URL: 'https://api.github.com'
-  REPO: 'Abdul123680/meridian'
-  IMAGE_NAME: 'blackmumba12345/hello-world:latest'
+  - group: 'Meridian Variables'
 
 steps:
   - task: UsePythonVersion@0
@@ -27,10 +25,6 @@ steps:
         STATUS="success"
       fi
       echo "{ \"pr_number\": \"$PR_NUMBER\", \"status\": \"$STATUS\", \"timestamp\": \"$(date +%Y-%m-%dT%H:%M:%SZ)\" }" > merge_results.json
-    displayName: 'Check Merge Status'
-
-  - script: |
-      docker login -u $(docker_username) -p PASSWORD $(docker_pwd)
-      docker build -t $(IMAGE_NAME) .
-      docker push $(IMAGE_NAME)
-    displayName: 'Build and Push Docker Image'
+      
+      cat merge_results.json
+    displayName: 'Check Merge Status and Print Results'
