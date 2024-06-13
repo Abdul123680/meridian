@@ -27,4 +27,6 @@ steps:
         STATUS="success"
       fi
       echo "{ \"pr_number\": \"$PR_NUMBER\", \"status\": \"$STATUS\", \"timestamp\": \"$(date +%Y-%m-%dT%H:%M:%SZ)\" }" > merge_results.json
-    displayName: 'Check Merge Status'
+      
+      cat merge_results.json
+    displayName: 'Check Merge Status and Print Results'
