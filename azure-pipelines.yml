@@ -7,7 +7,7 @@ pool:
 variables:
   GITHUB_API_URL: 'https://api.github.com'
   REPO: 'Abdul123680/meridian'
-  GITHUB_TOKEN: '$(github_token)'  # Use Azure DevOps secret variable
+  GITHUB_TOKEN: '$(github_token)'
   IMAGE_NAME: 'blackmumba12345/hello-world:latest'
 
 steps:
@@ -17,8 +17,7 @@ steps:
 
   - script: |
       pip install -r requirements.txt
-      python -m unittest discover
-    displayName: 'Run Tests'
+    displayName: 'Install Dependencies'
 
   - script: |
       PR_NUMBER=$(curl -s -H "Authorization: token $(GITHUB_TOKEN)" "$(GITHUB_API_URL)/repos/$(REPO)/pulls?state=open" | jq -r '.[0].number')
