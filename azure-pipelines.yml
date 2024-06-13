@@ -7,6 +7,7 @@ pool:
 variables:
   GITHUB_API_URL: 'https://api.github.com'
   REPO: 'Abdul123680/meridian'
+  GITHUB_TOKEN: $(github_token)
   IMAGE_NAME: 'blackmumba12345/hello-world:latest'
 
 steps:
@@ -19,9 +20,9 @@ steps:
     displayName: 'Install Dependencies'
 
   - script: |
-      PR_NUMBER=$(curl -s -H "Authorization: token $(github_token)" "$(GITHUB_API_URL)/repos/$(REPO)/pulls?state=open" | jq -r '.[0].number')
+      PR_NUMBER=$(curl -s -H "Authorization: token $(GITHUB_TOKEN)" "$(GITHUB_API_URL)/repos/$(REPO)/pulls?state=open" | jq -r '.[0].number')
       echo "Checking merge status for PR #$PR_NUMBER"
-      MERGE_STATUS=$(curl -H "Authorization: token $(github_token)" "$(GITHUB_API_URL)/repos/$(REPO)/pulls/$PR_NUMBER/merge" | jq -r '.merged')
+      MERGE_STATUS=$(curl -H "Authorization: token $(GITHUB_TOKEN)" "$(GITHUB_API_URL)/repos/$(REPO)/pulls/$PR_NUMBER/merge" | jq -r '.merged')
       STATUS="failure"
       if [ "$MERGE_STATUS" = "true" ]; then
         STATUS="success"
