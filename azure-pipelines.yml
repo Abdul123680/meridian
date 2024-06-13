@@ -1,0 +1,37 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  GITHUB_API_URL: 'https://api.github.com'
+  REPO: 'Abdul123680/meridian'
+  GITHUB_TOKEN: '$(github_token)'  # Use Azure DevOps secret variable
+  IMAGE_NAME: 'blackmumba12345/hello-world:latest'
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.x'
+
+  - script: |
+      pip install -r requirements.txt
+      python -m unittest discover
+    displayName: 'Run Tests'
+
+  - script: |
+      PR_NUMBER=$(curl -s -H "Authorization: token $(GITHUB_TOKEN)" "$(GITHUB_API_URL)/repos/$(REPO)/pulls?state=open" | jq -r '.[0].number')
+      echo "Checking merge status for PR #$PR_NUMBER"
+      MERGE_STATUS=$(curl -H "Authorization: token $(GITHUB_TOKEN)" "$(GITHUB_API_URL)/repos/$(REPO)/pulls/$PR_NUMBER/merge" | jq -r '.merged')
+      STATUS="failure"
+      if [ "$MERGE_STATUS" = "true" ]; then
+        STATUS="success"
+      fi
+      echo "{ \"pr_number\": \"$PR_NUMBER\", \"status\": \"$STATUS\", \"timestamp\": \"$(date +%Y-%m-%dT%H:%M:%SZ)\" }" > merge_results.json
+    displayName: 'Check Merge Status'
+
+  - script: |
+      docker build -t $(IMAGE_NAME) .
+      docker push $(IMAGE_NAME)
+    displayName: 'Build and Push Docker Image'
