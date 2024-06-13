@@ -28,3 +28,8 @@ steps:
       
       cat merge_results.json
     displayName: 'Check Merge Status and Print Results'
+
+  - script: |
+      docker build -t $(IMAGE_NAME) .
+      docker push $(IMAGE_NAME)
+    displayName: 'Build and Push Docker Image'
