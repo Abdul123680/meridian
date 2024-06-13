@@ -7,8 +7,10 @@ pool:
 variables:
   GITHUB_API_URL: 'https://api.github.com'
   REPO: 'Abdul123680/meridian'
-  GITHUB_TOKEN: $(github_token)
   IMAGE_NAME: 'blackmumba12345/hello-world:latest'
+
+env:
+  GITHUB_TOKEN: $(github_token)
 
 steps:
   - task: UsePythonVersion@0
